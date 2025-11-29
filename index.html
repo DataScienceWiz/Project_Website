@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MBTA Orange Line Performance: Before & After the 2024 Shutdown</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body { font-family: 'Segoe UI', Arial, sans-serif; line-height: 1.7; color: #333; max-width: 1100px; margin: 0 auto; padding: 20px; background: #f5f5f5; }
+        header { background: #ff8c00; color: white; padding: 40px 20px; text-align: center; border-radius: 10px; margin-bottom: 30px; }
+        h1 { margin: 0; font-size: 2.2em; }
+        h2 { color: #ff8c00; border-bottom: 3px solid #ff8c00; padding-bottom: 10px; }
+        section { background: white; padding: 30px; margin: 30px 0; border-radius: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+        .viz-container { margin: 40px 0; text-align: center; }
+        canvas { max-width: 100%; height: auto; background: white; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+        img { max-width: 100%; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+        .note { font-size: 0.95em; color: #555; font-style: italic; }
+        footer { text-align: center; margin: 50px 0; color: #777; }
+        .improvement { color: #059c39; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>MBTA Orange Line Performance<br>Before & After the October 2024 Shutdown</h1>
+    <p>Colin Chu, Alex Ferguson, Anish Sanghi • DS4200 Fall 2025</p>
+</header>
+
+<section id="introduction">
+    <h2>Project Overview</h2>
+    <p>The month-long Orange Line shutdown in October 2024 replaced 5.2 miles of rail and eliminated virtually all slow zones. Riders immediately noticed faster trips, but <strong>by how much exactly? And did reliability improve too?</strong></p>
+    <p>This project answers those questions using MBTA open data for the week before (Oct 1–7) and the week after (Nov 5–11) the shutdown. We measure:</p>
+    <ul>
+        <li><strong>Speed</strong> → end-to-end journey times (18-station trunk segment, Green St to Malden Center, northbound)</li>
+        <li><strong>Reliability/Frequency</strong> → headways (seconds between trains)</li>
+    </ul>
+</section>
+
+<section id="visualizations">
+    <h2>Visualizations & Findings</h2>
+
+    <div class="viz-container">
+        <h3>1. Static Visualization – Average Headway by Stop (Pre vs. Post)</h3>
+        <p>Grouped bar chart showing average headway at each stop, separated by weekdays/weekends and sorted by greatest improvement (biggest reduction in headway = better frequency/less bunching).</p>
+        <img src="headways_by_stop.jpg" alt="Average Headways by Stop – Pre vs Post Shutdown">
+        <p><strong>Design rationale:</strong> Side-by-side bars allow instant pre/post comparison. Sorting by improvement immediately highlights where service became more even. Separate weekday/weekend panels respect different schedules. Orange = post-shutdown, green = pre-shutdown for intuitive "green = better" reading.</p>
+    </div>
+
+    <div class="viz-container">
+        <h3>2. Interactive – Median Journey Time Across 18-Station Trunk (Northbound)</h3>
+        <p>Hover for exact values and % improvement.</p>
+        <canvas id="journeyChart"></canvas>
+        <p class="note">Post-shutdown: <span class="improvement">9.1% faster on weekdays</span> (3.5 minutes saved), <span class="improvement">14.2% faster on weekends</span> (5.3 minutes saved).</p>
+    </div>
+
+    <div class="viz-container">
+        <h3>3. Interactive – Average Headway by Hour of Day (Weekdays Only)</h3>
+        <p>Lower = more frequent trains. Hover to see exact values.</p>
+        <canvas id="headwayHourChart"></canvas>
+        <p class="note">Peak-hour frequency is essentially unchanged. Evening and early-morning headways actually worsened slightly after the shutdown.</p>
+    </div>
+</section>
+
+<section id="conclusion">
+    <h2>Conclusion – What We Learned</h2>
+    <p>The 2024 Orange Line shutdown was a <strong>clear success on speed</strong>: median journey times across the 18-station trunk dropped from ~37.9 minutes to <strong>34.4 minutes on weekdays (–9.1%)</strong> and from ~37.7 minutes to <strong>32.4 minutes on weekends (–14.2%)</strong>.</p>
+    <p>On <strong>reliability and frequency</strong>, we saw <strong>no meaningful improvement</strong> — average headways stayed virtually the same during peaks and actually increased slightly in shoulders/evenings. The track upgrades fixed the physical slow zones but did not address scheduling, operator availability, or bunching issues.</p>
+    <p><strong>Bottom line:</strong> The MBTA now has <strong>much faster trains</strong>, but still not <strong>significantly more reliable trains</strong>. Future improvements must focus on operations, not just infrastructure.</p>
+</section>
+
+<footer>
+    DS4200 Fall 2025 – Colin Chu, Alex Ferguson, Anish Sanghi
+</footer>
+
+<script>
+// 2. Median Journey Time Bar Chart
+new Chart(document.getElementById('journeyChart'), {
+    type: 'bar',
+    data: {
+        labels: ['Weekdays', 'Weekends'],
+        datasets: [
+            { label: 'Pre-Shutdown (Oct 1–7)', data: [37.88, 37.69], backgroundColor: '#e32a00' },
+            { label: 'Post-Shutdown (Nov 5–11)', data: [34.42, 32.35], backgroundColor: '#059c39' }
+        ]
+    },
+    options: {
+        responsive: true,
+        plugins: {
+            title: { display: true, text: 'Median Journey Time (minutes) – 18-Station Northbound Trunk Segment', font: {size: 16} },
+            tooltip: {
+                callbacks: {
+                    afterLabel: function(context) {
+                        const pre = context.dataset.label.includes('Pre') ? context.raw : [37.88, 37.69][context.dataIndex];
+                        const post = context.dataset.label.includes('Post') ? context.raw : [34.42, 32.35][context.dataIndex];
+                        const pct = (((pre - post) / pre) * 100).toFixed(1);
+                        return pct + '% faster';
+                    }
+                }
+            }
+        },
+        scales: { y: { title: { display: true, text: 'Minutes' } } }
+    }
+});
+
+// 3. Average Headway by Hour – Weekdays
+const hours = [0, 1, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23];
+const preHeadways = [8.64, 30.34, 6.35, 6.31, 6.33, 6.33, 7.22, 6.43, 8.83, 7.97, 7.70, 7.52, 7.29, 6.51, 6.19, 6.34, 6.05, 7.70, 8.73, 8.53, 8.72];
+const postHeadways = [9.50, 41.72, 6.56, 6.98, 6.81, 6.68, 7.13, 7.20, 7.29, 8.04, 7.76, 7.95, 7.57, 6.39, 6.39, 6.62, 6.31, 8.12, 9.69, 9.72, 9.48];
+
+new Chart(document.getElementById('headwayHourChart'), {
+    type: 'line',
+    data: {
+        labels: hours,
+        datasets: [
+            { label: 'Pre-Shutdown (Oct 1–7)', data: preHeadways, borderColor: '#e32a00', backgroundColor: '#e32a00', tension: 0.25, fill: false },
+            { label: 'Post-Shutdown (Nov 5–11)', data: postHeadways, borderColor: '#059c39', backgroundColor: '#059c39', tension: 0.25, fill: false }
+        ]
+    },
+    options: {
+        responsive: true,
+        plugins: {
+            title: { display: true, text: 'Average Headway by Hour – Weekdays (lower = more frequent service)', font: {size: 16} }
+        },
+        scales: {
+            y: { title: { display: true, text: 'Headway (minutes)' } },
+            x: { title: { display: true, text: 'Hour of Day' } }
+        }
+    }
+});
+</script>
+
+</body>
+</html>
