@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <style>
+    #vis.vega-embed {
+      width: 100%;
+      display: flex;
+    }
+
+    #vis.vega-embed details,
+    #vis.vega-embed details summary {
+      position: relative;
+    }
+  </style>
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/vega@5"></script>
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/vega-lite@5.20.1"></script>
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/vega-embed@6"></script>
+</head>
+<body>
+  <div id="vis"></div>
+  <script>
+    (function(vegaEmbed) {
+      var spec = {"config": {"view": {"continuousWidth": 300, "continuousHeight": 300}, "axis": {"labelFontSize": 12, "titleFontSize": 14}, "title": {"fontSize": 18}}, "hconcat": [{"data": {"name": "data-4860a36dad46585439dde67f72fd81ac"}, "mark": {"type": "line", "point": {"filled": true, "size": 80}}, "encoding": {"color": {"field": "week", "legend": null, "scale": {"domain": [1, 2], "range": ["#002051", "#f0d752"]}, "title": "Period", "type": "nominal"}, "opacity": {"condition": {"test": "((datum.week === param_1) || (param_1 === null))", "value": 1.0}, "value": 0.2}, "strokeDash": {"value": [6, 0]}, "tooltip": [{"field": "week", "type": "nominal"}, {"field": "hour", "type": "ordinal"}, {"field": "avg_headways", "type": "quantitative"}], "x": {"field": "hour", "title": "Hour of Day", "type": "ordinal"}, "y": {"field": "avg_headways", "title": "Average Headway (minutes)", "type": "quantitative"}}, "height": 420, "title": "Weekday Headways", "width": 500}, {"data": {"name": "data-7d1f9bcc53ee455a4e3ffa9e8215b078"}, "mark": {"type": "line", "point": {"filled": true, "size": 80}}, "encoding": {"color": {"field": "week", "legend": null, "scale": {"domain": [1, 2], "range": ["#002051", "#f0d752"]}, "title": "Period", "type": "nominal"}, "opacity": {"condition": {"test": "((datum.week === param_1) || (param_1 === null))", "value": 1.0}, "value": 0.2}, "strokeDash": {"value": [10, 5]}, "tooltip": [{"field": "week", "type": "nominal"}, {"field": "hour", "type": "ordinal"}, {"field": "avg_headways", "type": "quantitative"}], "x": {"field": "hour", "title": "Hour of Day", "type": "ordinal"}, "y": {"field": "avg_headways", "title": "Average Headway (minutes)", "type": "quantitative"}}, "height": 420, "title": "Weekend Headways", "width": 500}], "params": [{"name": "param_1", "bind": {"input": "radio", "options": [null, 1, 2], "labels": ["Both", "Week 1 (Pre)", "Week 2 (Post)"], "name": "Weeks: "}, "value": null}], "$schema": "https://vega.github.io/schema/vega-lite/v5.20.1.json", "datasets": {"data-4860a36dad46585439dde67f72fd81ac": [{"week": 1, "hour": 0, "avg_headways": 8.64}, {"week": 1, "hour": 1, "avg_headways": 30.34}, {"week": 1, "hour": 5, "avg_headways": 6.35}, {"week": 1, "hour": 6, "avg_headways": 6.31}, {"week": 1, "hour": 7, "avg_headways": 6.33}, {"week": 1, "hour": 8, "avg_headways": 6.33}, {"week": 1, "hour": 9, "avg_headways": 7.22}, {"week": 1, "hour": 10, "avg_headways": 6.43}, {"week": 1, "hour": 11, "avg_headways": 8.83}, {"week": 1, "hour": 12, "avg_headways": 7.97}, {"week": 1, "hour": 13, "avg_headways": 7.7}, {"week": 1, "hour": 14, "avg_headways": 7.52}, {"week": 1, "hour": 15, "avg_headways": 7.29}, {"week": 1, "hour": 16, "avg_headways": 6.51}, {"week": 1, "hour": 17, "avg_headways": 6.19}, {"week": 1, "hour": 18, "avg_headways": 6.34}, {"week": 1, "hour": 19, "avg_headways": 6.05}, {"week": 1, "hour": 20, "avg_headways": 7.7}, {"week": 1, "hour": 21, "avg_headways": 8.73}, {"week": 1, "hour": 22, "avg_headways": 8.53}, {"week": 1, "hour": 23, "avg_headways": 8.72}, {"week": 2, "hour": 0, "avg_headways": 9.5}, {"week": 2, "hour": 1, "avg_headways": 41.72}, {"week": 2, "hour": 5, "avg_headways": 6.56}, {"week": 2, "hour": 6, "avg_headways": 6.98}, {"week": 2, "hour": 7, "avg_headways": 6.81}, {"week": 2, "hour": 8, "avg_headways": 6.68}, {"week": 2, "hour": 9, "avg_headways": 7.13}, {"week": 2, "hour": 10, "avg_headways": 7.2}, {"week": 2, "hour": 11, "avg_headways": 7.29}, {"week": 2, "hour": 12, "avg_headways": 8.04}, {"week": 2, "hour": 13, "avg_headways": 7.76}, {"week": 2, "hour": 14, "avg_headways": 7.95}, {"week": 2, "hour": 15, "avg_headways": 7.57}, {"week": 2, "hour": 16, "avg_headways": 6.39}, {"week": 2, "hour": 17, "avg_headways": 6.39}, {"week": 2, "hour": 18, "avg_headways": 6.62}, {"week": 2, "hour": 19, "avg_headways": 6.31}, {"week": 2, "hour": 20, "avg_headways": 8.12}, {"week": 2, "hour": 21, "avg_headways": 9.69}, {"week": 2, "hour": 22, "avg_headways": 9.72}, {"week": 2, "hour": 23, "avg_headways": 9.48}], "data-7d1f9bcc53ee455a4e3ffa9e8215b078": [{"week": 1, "hour": 0, "avg_headways": 11.58}, {"week": 1, "hour": 1, "avg_headways": 45.18}, {"week": 1, "hour": 5, "avg_headways": 9.77}, {"week": 1, "hour": 6, "avg_headways": 10.26}, {"week": 1, "hour": 7, "avg_headways": 10.64}, {"week": 1, "hour": 8, "avg_headways": 10.65}, {"week": 1, "hour": 9, "avg_headways": 10.58}, {"week": 1, "hour": 10, "avg_headways": 11.15}, {"week": 1, "hour": 11, "avg_headways": 10.7}, {"week": 1, "hour": 12, "avg_headways": 12.45}, {"week": 1, "hour": 13, "avg_headways": 13.45}, {"week": 1, "hour": 14, "avg_headways": 10.57}, {"week": 1, "hour": 15, "avg_headways": 10.67}, {"week": 1, "hour": 16, "avg_headways": 10.97}, {"week": 1, "hour": 17, "avg_headways": 10.66}, {"week": 1, "hour": 18, "avg_headways": 11.28}, {"week": 1, "hour": 19, "avg_headways": 10.46}, {"week": 1, "hour": 20, "avg_headways": 11.47}, {"week": 1, "hour": 21, "avg_headways": 10.33}, {"week": 1, "hour": 22, "avg_headways": 10.5}, {"week": 1, "hour": 23, "avg_headways": 10.71}, {"week": 2, "hour": 0, "avg_headways": 11.88}, {"week": 2, "hour": 1, "avg_headways": 44.02}, {"week": 2, "hour": 4, "avg_headways": null}, {"week": 2, "hour": 5, "avg_headways": 9.34}, {"week": 2, "hour": 6, "avg_headways": 10.05}, {"week": 2, "hour": 7, "avg_headways": 10.71}, {"week": 2, "hour": 8, "avg_headways": 11.44}, {"week": 2, "hour": 9, "avg_headways": 10.85}, {"week": 2, "hour": 10, "avg_headways": 11.01}, {"week": 2, "hour": 11, "avg_headways": 10.79}, {"week": 2, "hour": 12, "avg_headways": 10.78}, {"week": 2, "hour": 13, "avg_headways": 10.99}, {"week": 2, "hour": 14, "avg_headways": 11.39}, {"week": 2, "hour": 15, "avg_headways": 10.59}, {"week": 2, "hour": 16, "avg_headways": 10.98}, {"week": 2, "hour": 17, "avg_headways": 10.81}, {"week": 2, "hour": 18, "avg_headways": 11.08}, {"week": 2, "hour": 19, "avg_headways": 11.25}, {"week": 2, "hour": 20, "avg_headways": 10.49}, {"week": 2, "hour": 21, "avg_headways": 10.35}, {"week": 2, "hour": 22, "avg_headways": 10.63}, {"week": 2, "hour": 23, "avg_headways": 10.58}]}};
+      var embedOpt = {"mode": "vega-lite"};
+
+      function showError(el, error){
+          el.innerHTML = ('<div style="color:red;">'
+                          + '<p>JavaScript Error: ' + error.message + '</p>'
+                          + "<p>This usually means there's a typo in your chart specification. "
+                          + "See the javascript console for the full traceback.</p>"
+                          + '</div>');
+          throw error;
+      }
+      const el = document.getElementById('vis');
+      vegaEmbed("#vis", spec, embedOpt)
+        .catch(error => showError(el, error));
+    })(vegaEmbed);
+
+  </script>
+</body>
+</html>
