@@ -93,7 +93,7 @@
 
 <section id="static">
     <h2>Visualization 1: Average Headways by Stop</h2>
-    <div id="barplot"></div>
+    <div id="barplot" style="margin: 0 auto; width: 800px;"></div>
     <div id="tooltip" 
      style="position: absolute; 
             padding: 6px 10px;
@@ -107,6 +107,10 @@
     </div>
 
     
+    <p>This bar chart compares the mean headways by stop from week 1 to week 2 across weekdays and weekends, sorted by most to least improved (lower headways indicate lower wait time between trains). The chart includes interactive tooltips so that we can see information about the exact mean headways for weeks 1-2 and the difference.</p>
+    <p>We can see that on weekdays, we actually have slightly higher headways in week 2 (post-construction) compared to week 1. However, for weekends, we have a minor improvement on headway times from week 1 to week 2, but this improvement is small relative to the magnitude of the headways. Also note that since we have different y-axes for weekdays/weekends, we have on average significantly lower headways on weekdays compared to weekends, which indicates that there might be more trains operating on weekdays than weekends. </p>
+    <strong>Key Takeaway: The Orange Line has had some minor/negligible improvements in headways on weekends, but surprisingly on weekdays we have worse/longer average headways post-construction.</strong>
+    <p>Next let’s look at the distribution of headways across the stations for weekdays and weekends for both weeks.</p>
     <div class="design-note">
         <strong>Design justification:</strong><br>
         • Mark: Grouped bar — ideal for direct pre/post comparison per stop<br>
