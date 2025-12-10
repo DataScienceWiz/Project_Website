@@ -108,7 +108,7 @@
 
     
     <p>This bar chart compares the mean headways by stop from week 1 to week 2 across weekdays and weekends, sorted by most to least improved (lower headways indicate lower wait time between trains). The chart includes interactive tooltips so that we can see information about the exact mean headways for weeks 1-2 and the difference.</p>
-    <p>We can see that on weekdays, we actually have slightly higher headways in week 2 (post-construction) compared to week 1. However, for weekends, we have a minor improvement on headway times from week 1 to week 2, but this improvement is small relative to the magnitude of the headways. Also note that since we have different y-axes for weekdays/weekends, we have on average significantly lower headways on weekdays compared to weekends, which indicates that there might be more trains operating on weekdays than weekends. </p>
+    <p>We can see that on weekdays, we actually have <strong>slightly higher headways in week 2 (post-construction) compared to week 1</strong>. However, for weekends, we have a <strong>minor improvement on headway times from week 1 to week 2</strong>, but this improvement is small relative to the magnitude of the headways. Also note that since we have different y-axes for weekdays/weekends, we have on average <strong>significantly lower headways on weekdays compared to weekends</strong>, which indicates that there might be more trains operating on weekdays than weekends. </p>
     <strong>Key Takeaway: The Orange Line has had some minor/negligible improvements in headways on weekends, but surprisingly on weekdays we have worse/longer average headways post-construction.</strong>
     <p>Next let’s look at the distribution of headways across the stations for weekdays and weekends for both weeks.</p>
     <div class="design-note">
@@ -117,16 +117,17 @@
         • Stops sorted by improvement magnitude → biggest winners appear first<br>
         • Color: yellow and red to fit the Orange Line theme while allowing greyscale visibility<br>
         • Faceted by weekday/weekend to account for service discrepancies<br>
-        • Static format makes the main story immediately visible without any interaction.
     </div>
 
     <h2>Visualization 2: Daily Average Headway Distributions</h2>
     <img src="headway_boxplots.png" alt="Daily Average Headway Boxplots" style="display:block; margin:0 auto;">
-
+    <p>This boxplot shows the distribution of the headways for weekdays and weekends across weeks 1-2, expanding upon our analysis from our previous bar chart. </p>
+    <p>For weekdays, we can see that there is <strong>very little variance in headways</strong>, as indicated by the whiskers being almost identical to our IQR, and comparing them we again see that <strong>week 2 has longer headways than week 1</strong>. However <strong>we do see an outlier for week 2</strong>, which we could further explore to figure out why we would have longer headways post-construction. Then for weekends, <strong>the two boxes are nearly identical, indicating no change in week 1 and 2</strong>. The longer whiskers could indicate that there is more variance on headways during the weekends, possibly due to high variance in passengers on the weekends or delays.</p>
+    <strong>Key Takeaway: Our boxplots mostly agree with our bar plots, where weekdays have longer headways post-construction, and weekends have little to no improvement on headways. However we have identified an outlier for weekdays which we could further examine. </strong>
+    <p>Next let’s examine headways by mid-day/evening hours across the two weeks.</p>
     <div class="design-note">
         <strong>Design justification:</strong><br>
         • Mark: Boxplot — perfect for showing median + variability day-to-day<br>
-        • Nearly identical boxes pre/post → instantly proves reliability did not improve<br>
         • Separate panels for weekdays vs. weekends respect different service patterns.
     </div>
 
@@ -136,23 +137,24 @@
 
 <section id="interactive">
     <h2>Visualization 3: Average Headway by Time of Day</h2>
-    <div style="background:#fff4e6; padding:20px; border-left:5px solid #ff8c00; margin:30px 0; border-radius:8px;">
-    <strong>How to use this interactive headway graph:</strong>
+    <div style="background:#fff4e6; padding:20px; border-left:5px solid #ff8c00; margin:20px 0; border-radius:8px;">
+    <p>How to use this interactive headway graph:</p>
     <ol style="margin:15px 0; line-height:1.8;">
-        <li>The <strong>top panel shows weekdays</strong> (solid lines)</li>
-        <li>The <strong>bottom panel shows weekends</strong> (dashed lines)</li>
-        <li>Use the <strong>Weeks radio buttons</strong> at the top:<br>
-            • <strong>Both</strong> → navy blue = Pre-shutdown, gold = Post-shutdown<br>
-            • <strong>Week 1 (Pre)</strong> → only navy blue highlighted<br>
-            • <strong>Week 2 (Post)</strong> → only gold highlighted</li>
-        <li><strong>Hover</strong> any point to see the exact average headway in minutes for that hour</li>
+        <li><strong>Click on weeks on the legend</strong> on the right:<br>
+            • <strong>Both</strong> → Orange = Pre-shutdown, Brown = Post-shutdown<br>
+            • <strong>Week 1</strong> → only orange highlighted<br>
+            • <strong>Week 2</strong> → only brown highlighted<br>
+            • Click anywhere else to return to both weeks.</li>
+        <li><strong>Hover</strong> any point to see the exact average headway in seconds for that hour and the total number of trips at that hour for that week.</li>
     </ol>
 
     </div>
     <div style="text-align:center;">
         <iframe src="headway_line_interactive.html" class="headway-iframe" frameborder="0"></iframe>
     </div>
-
+    <p>This line chart compares the average headways by hour from week 1-2 for weekdays and weekends. For this line chart we filtered it to include trains from 6am-9pm to focus on daytime/evening hours, since the other hours had less trains operating. The chart includes interactions as explained above to display additional information and to filter out lines.</p>
+    <p>Both our weekday and weekend charts agree that there is <strong>little to no difference between most daytime and evening hours</strong> in weeks 1 and 2. However we do see a <strong>notable improvement post-construction in afternoon hours (11am-1pm)</strong>, ranging from a 50-150 second shorter interval if we hover over the points. This indicates that our previous charts might’ve been skewed by non-peak hours, showing that weekdays had overall longer headways by day, but we can see that for mid-day hours we have a small improvement post-construction.</p>
+    <strong>Key Takeaway: Looking at peak/mid-day hours, there is a slight improvement in headways around the afternoon from 11am-1pm, and negligible difference between weeks in other mid-day hours. Our previous charts might’ve been skewed by non-peak hours with less trains leading to longer headways.</strong>
     <div class="design-note">
         <strong>Design justification:</strong><br>
         • Mark: Line and point, gives insight to headways at different times of the day + judge headways hourly to compare changes in parts of the day and identify outliers<br>
@@ -238,14 +240,15 @@
     <p>The October 2024 Orange Line shutdown was a <strong>resounding success on speed</strong> — the speed map shows massive gains across nearly the entire line, especially in the repaired Southwest Corridor south of Ruggles Station.</p>
     <p>As for <strong>reliability and frequency</strong>, we can see that:<br>
         <ul>
-            <li>Stop-by-stop headways showed almost no improvement. The stretch of weekdays after the shutdown saw longer headways at every station, and on the weekends there was only a slight improvement.</li>
+            <li><strong>Stop-by-stop headways showed almost no improvement. </strong>The stretch of weekdays after the shutdown saw longer headways at every station, and on the weekends there was only a slight improvement.</li>
             <li>The distribution of headway times were essentially identical according to the boxplot, which also shows post-shutdown weekdays having lower frequency on average.</li>
-            <li>Hourly, there was a slight improvement on frequency during midday. Some of the discrepancies during Week 2 are explained by late-night outliers, so there was only a slight overall improvement after shutdown.</li>
+            <li><strong>Hourly, there was a slight improvement on headways during midday.</strong> Some of the discrepancies during Week 2 are explained by late-night outliers, so there was only a slight overall improvement after shutdown.</li>
         </ul>
-    <p>We think this lack of frequency improvement is due to two reasons: Firstly, operations likely slowly increased back to normal after the shutdown ended, which may cause little improvement in the first few weeks. Secondly, the only thing that changed after the shutdown was the quality of the tracks, and not the volume of the trains. In other words, trains themselves are moving faster, but without adding extra trains the frequency remains unchanged.</p>
-    <p><strong>Final verdict:</strong> Riders now enjoy dramatically faster trips, especially on the outskirts of the line, and they may even notice slightly higher train frequency during specific hours. Now that the underlying infastructure of the line has been repaired, future improvement efforts must target operations, scheduling, and increasing the volume of rolling stock.</p>
+    <p>We think this lack of frequency improvement is due to two reasons: Firstly, <strong>operations likely slowly increased back to normal after the shutdown ended</strong>, which may cause little improvement in the first few weeks. Secondly, the only thing that changed after the shutdown was the <strong>quality of the tracks, and not the volume of the trains</strong>. In other words, trains themselves are moving faster, but without adding extra trains the frequency remains unchanged.</p>
+    <strong>Final verdict: Riders now enjoy dramatically faster trips, especially on the outskirts of the line, and they may even notice slightly higher train frequency during specific hours. Now that the underlying infastructure of the line has been repaired, future improvement efforts must target operations, scheduling, and increasing the volume of rolling stock.</strong>
     <p>The MBTA has been actively working on this front with the delivery of the new Chinese-built CRRC cars, which have already been fully deployed on the Orange Line and only partially on the Red Line. The delay in rollout is due to bureaucracy slowdowns with US Customs, who are actively investigating alleged labor violations<sup>3</sup>. Car deliveries on the Red Line have also been pushed back, forcing the MBTA to continue using the already-aged Pullman cars on the line. These cars are now the oldest operating subway cars in the United States, having been built in 1969.</p>
     <p>As for the Orange Line, riders will likely see yet another improvement in frequency as the final CRRC cars are set to be delivered before the end of 2025.</p>
+    <p>For future work, we could compare this October Orange Line shutdown to other shutdowns and see which ones improved on speed and frequency the most, then use that to identify which parts of the MBTA lines needed to be changed. With this, we could also examine across longer periods of time, rather than just two weeks, which would likely tell us the full story of headways and speed.</p>
 </section>
 
 <section id="biblio">
