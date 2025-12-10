@@ -3,7 +3,7 @@
 const width = 800;
 const panelHeight = 250;
 const margin = {top: 55, right: 90, bottom: 50, left: 60};
-const colors = ["#FDFF7C", "#8f0000"];
+const colors = ["#FDFF7C", "#8c2d04"];
 
 const svg = d3.select('#barplot')
               .append('svg')
