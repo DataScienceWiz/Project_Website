@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MBTA Orange Line Performance Before & After October 2024 Shutdown</title>
+    <style>
+        body { font-family: 'Segoe UI', Arial, sans-serif; line-height: 1.7; color: #333; max-width: 1100px; margin: 0 auto; padding: 20px; background: #f5f5f5; }
+        header { background: #ff8c00; color: white; padding: 50px 20px; text-align: center; border-radius: 12px; margin-bottom: 30px; }
+        h1 { margin: 0; font-size: 2.4em; }
+        h2 { color: #ff8c00; border-bottom: 3px solid #ff8c00; padding-bottom: 10px; }
+        section { background: white; padding: 35px; margin: 30px 0; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        img { max-width: 100%; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.15); }
+        iframe { width: 100%; height: 680px; border: none; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.15); } /* ← ONLY THIS LINE CHANGED */
+        .design-note { background: #fff4e6; padding: 20px; border-left: 5px solid #ff8c00; margin: 25px 0; }
+        .big-link { display: inline-block; background: #ff8c00; color: white; padding: 20px 40px; font-size: 1.4em; font-weight: bold; border-radius: 12px; text-decoration: none; margin: 30px 0; }
+        .big-link:hover { background: #e07b00; }
+        #interactive iframe {
+            display: block;
+            border: none;}
+        #interactive .headway-iframe {
+            height: 600px;}
+        #interactive .map-iframe {
+            height: 1200px;}
+    </style>
+</head>
+<body>
+<body>
+
+<header>
+    <h1>MBTA Orange Line Performance<br>Before & After the October 2024 Shutdown</h1>
+    <p>Colin Chu, Alex Ferguson, Anish Sanghi • DS4200 Fall 2025</p>
+</header>
+
+<section id="introduction">
+       <h2>Project Overview</h2>
+    <p>On the evening of October 8th, 2024, the last full-route Orange Line train for nearly a month pulled into Forest Hills station. What followed was the start of one of the most expansive infrastructure overhauls in the history of the MBTA, meant to address the decades of disinvestment and deferred maintenance which had left the rails along the corridor to deteriorate<sup>1</sup>. As Orange Line commuters boarded replacement shuttle buses, crews went to work eliminating “slow zones”,  or speed restrictions which had been put in place for safety reasons due to the condition of the tracks.</p>
+    <p>This month-long shutdown replaced 5.2 miles of rail<sup>2</sup> and eliminated virtually all slow zones. When the line reopened, riders immediately noticed faster trips, but <strong>by how much exactly? And did reliability improve too?</strong></p>
+    <p>This project answers those questions using public headway data from MBTA’s Blue Book Portal. Due to the service discrepancies between weekdays and weekends, we split our data into an equal number of pre- and post-shutdown weekdays (Oct 1–4, 7), (Nov 5-8, 11) and weekends (Oct 5-6), (Nov 9-10), according to the calendar below:</p>
+    <div style="text-align: center;">
+        <img src="calendar.png" alt="Calendar of Measured Data" width="700" height="300" class="center">
+    </div>
+    <p>For this segment, we measured:</p>
+    <ul>
+        <li><strong>Speed</strong> → The end-to-end journey times (18-station trunk segment - Green St to Malden Center Northbound) and the average speed between each station segment</li>
+        <li><strong>Reliability/Frequency</strong> → Headways (number of seconds between trains)</li>
+    </ul>
+   <p>Completed tasks:</p>
+    <ul>
+        <li>Median journey time comparison (pre vs. post, weekdays & weekends)</li>
+        <li>Average headways by stop, by hour, and daily distribution</li>
+        <li>Per-segment speed improvement mapping (interactive Mapbox)</li>
+        <li>Percentage change and variability analysis</li>
+    </ul>
+</section>
+
+<section id="data introduction">
+    <h2>Data Introduction</h2>
+    <p>For this project, we used public headway data from MBTA’s Blue Book Portal, specifically the <a href="https://mbta-massdot.opendata.arcgis.com/datasets/ccb2941254944803bbd4e2df58e09906/about">‘MBTA Rapid Transit Headways 2024’</a> dataset, which includes detailed information about each subway trip between stations. For the scope of our project, we filtered the dataset to just our two weeks: Oct 1-7 and Nov 5-11 2024, and trips only for the Orange Line heading north from Forest Hills to Oak Grove. After trimming and filtering, our dataset has about 36000 rows and 10 features, including service date, route and trip ids, parent station, stop name, time of departure, headway in seconds, and added features with information about if its a weekday/weekend, the hour and which week it belongs to.</p> 
+    <div style="margin-top: 20px; border: 3px solid #ff8c00; border-radius: 8px; padding: 15px;">
+        <table id="dataTable" class="display" style="width:100%"></table>
+    </div>
+    
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+    <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+    
+    <script>
+        Papa.parse('2024_oct_nov_mbta.csv', {
+            download: true,
+            header: true,
+            complete: function(results) {
+                const first50 = results.data.slice(0, 50);
+                $('#dataTable').DataTable({
+                    data: first50,
+                    columns: Object.keys(first50[0]).map(key => ({
+                        title: key,
+                        data: key
+                    })),
+                    scrollY: '300px',
+                    scrollCollapse: true,
+                    pageLength: 10,
+                    lengthMenu: [10,25,50]
+
+                });
+            }
+        });
+    </script>
+    <p>Cruciually, <strong>segments to and from the terminal stations at Oak Grove and Forest Hills were not included in the dataset</strong> due to the nature of our dataset. Because the data focuses primarily on train headways, it requires a train to be between two non-terminal stations for data collection. As MBTA riders may know, a train will wait at a terminal station with its doors open and only departs when the next train arrives. This effectively means the headways at terminal stations are always 0 minutes, which is why data from termini is not included.</p>
+</section>
+
+<section id="static">
+    <h2>Visualization 1: Average Headways by Stop</h2>
+    <p>The first metric we examined</p>
+    <div id="barplot"></div>
+    
+    <p>insert vis 1 analysis here</p>
+    <div class="design-note">
+        <strong>Design justification:</strong><br>
+        • Mark: Grouped bar — ideal for direct pre/post comparison per stop<br>
+        • Stops sorted by improvement magnitude → biggest winners appear first<br>
+        • Color: cividis-like colormap for improved colorblind accessability and greyscale advantages<br>
+        • Faceted by weekday/weekend to account for service discrepancies<br>
+        • Static format makes the main story immediately visible without any interaction.
+    </div>
+
+    <h2>Visualization 2: Daily Average Headway Distributions</h2>
+    <img src="headway_boxplots.png" alt="Daily Average Headway Boxplots" style="display:block; margin:0 auto;">
+
+    <div class="design-note">
+        <strong>Design justification:</strong><br>
+        • Mark: Boxplot — perfect for showing median + variability day-to-day<br>
+        • Nearly identical boxes pre/post → instantly proves reliability did not improve<br>
+        • Separate panels for weekdays vs. weekends respect different service patterns.
+    </div>
+
+    <script src='https://d3js.org/d3.v7.min.js'></script>
+    <script src='d3_bar.js'></script>   
+</section>
+
+<section id="interactive">
+    <h2>Visualizaton 3: Average Headway by Time of Day</h2>
+    <div style="background:#fff4e6; padding:20px; border-left:5px solid #ff8c00; margin:30px 0; border-radius:8px;">
+  <strong>How to use this interactive headway graph:</strong>
+  <ol style="margin:15px 0; line-height:1.8;">
+    <li>The <strong>left panel shows weekdays</strong> (solid lines)</li>
+    <li>The <strong>right panel shows weekends</strong> (dashed lines)</li>
+    <li>Use the <strong>Weeks radio buttons</strong> at the top:<br>
+        • <strong>Both</strong> → navy blue = Pre-shutdown, gold = Post-shutdown<br>
+        • <strong>Week 1 (Pre)</strong> → only navy blue highlighted<br>
+        • <strong>Week 2 (Post)</strong> → only gold highlighted</li>
+    <li><strong>Hover</strong> any point to see the exact average headway in minutes for that hour</li>
+  </ol>
+  </p>
+</div>
+
+    <iframe src="headway_line_interactive.html" width='100%' class="headway-iframe" frameborder="0"></iframe>
+
+    <div class="design-note">
+        <strong>Design justification:</strong><br>
+        • Mark: Line and point, gives insight to headways at different times of the day + judge headways hourly to compare changes in parts of the day and identify outliers<br>
+        <ul>
+            <li>Point is used for users to hover over for the tooltip to look at the average headway for each hour of both weeks</li>
+        </ul>
+        • X-axis: hour of each day<br>
+        • Y-axis: average headway (minutes)<br>
+        • Separate panels for weekdays vs. weekends respect different service patterns<br>
+    </div>
+
+    <h2>Visualizaton 4: Map of Average Speed by Segment</h2>
+    <p>After analyzing the aggregated data for all stations on the line, we wanted to see which specific parts of track were problematic. To do this, we appended a manually-gathered dictionary of the latitude and longitude coordinates for each station, and rendered them as points on a Plotly basemap. Speeds were calculated by dividing the Cartesian distance between stations by the difference in time, which was found by sorting the data by train ID and subtracting the times a unique train arrived at consecutive stations. The resulting speeds were aggregated by segment and mapped to a colorscheme for display. The data was also set up for further cleaning by eliminating unrealistic speed measurements (over 60mph), as well as speed measurements between non-consecutive stations.</p>
+    <div style="background:#fff4e6; padding:20px; border-left:5px solid #ff8c00; margin:30px 0; border-radius:8px;">
+    <strong>How to Use the Segment Speed Map:</strong>
+    <ol style="margin:15px 0; line-height:1.8;">
+        <li>There are <strong>four sub-maps</strong>:<br>
+            <table style="width:100%; max-width:500px; margin:10px 0; border-collapse:collapse; text-align:center;">
+                <tr>
+                    <td style="border:2px solid #ff8c00; padding:10px; background:#fff;">
+                        <strong>Weekdays Pre-shutdown</strong><br>
+                        <small>(Oct 1-4, 7)</small>
+                    </td>
+                    <td style="border:2px solid #ff8c00; padding:10px; background:#fff;">
+                        <strong>Weekdays Post-shutdown</strong><br>
+                        <small>(Nov 5-8, 11)</small>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="border:2px solid #ff8c00; padding:10px; background:#fff;">
+                        <strong>Weekends Pre-shutdown</strong><br>
+                        <small>(Oct 5-6)</small>
+                    </td>
+                    <td style="border:2px solid #ff8c00; padding:10px; background:#fff;">
+                        <strong>Weekends Post-shutdown</strong><br>
+                        <small>(Nov 9-10)</small>
+                    </td>
+                </tr>
+            </table>
+        </li>
+        <li><strong>Hover</strong> over any colored line segment to show the average speed (mph), the range in individual speeds measured, as well as the number of included and excluded data points. You can also <strong>hover</strong> over a station to show its name</li>
+        <li>Use mouse <strong>scroll to zoom</strong>, <strong>drag to pan</strong>, or click the +/− buttons</li>
+    </ol>
+    </p>
+</div>
+    <iframe src="speed_output.html" width='100%' class="map-iframe" frameborder='0'></iframe>
+    <p>This map demonstrates how low the speeds of the downtown segment are, as trains have to make frequent stops and spend a larger portion of their time decelerating, stopping, and accelerating. The segments closer to end stations, especially the segment between Wellington and Malden Center, showed the highest average speeds. Interestingly, the segment of the Southwest Corridor (between Back Bay and Forest Hills) has a high variability in speed. Between Roxbury Crossing and Ruggles trains go nearly 25mph on average, but just two stations to the south the average train lurches along at 7mph between Stony Brook and Jackson Square. We can infer that this difference is caused by track quality, especially because the two segments are part of the same protected right-of-way.</p>
+    <div class="design-note">
+        <strong>Design Justification for the Segment Speed Map:</strong><br>
+        • Mark: Colored geographic line segments<br>
+        • Position: real lat/lon coordinates for accurate spatial context<br>
+        • Color: sequential YlOrRd colorscheme depicts positive values and reflects Orange Line theme<br>
+        • 2x2 grid clearly separates pre- and post-shutdown and weekday/weekend<br>
+        • Hover, Zoom, and Pan interactivity reveals segment-level information<br>
+    </div>
+
+    <h2>Visualizaton 5: Map of Speed Improvement by Segment</h2>
+    <p>After analyzing which track segments tend to be the slowest, we decided to see which portions of the line improved the most after the shutdown. We calculated the difference in speed post-shutdown compared to pre-shutdown, and recolored the line segments accordingly.</p>
+    <div style="background:#fff4e6; padding:20px; border-left:5px solid #ff8c00; margin:30px 0; border-radius:8px;">
+        <strong>How to Use the Speed Improvement Map:</strong>
+        <ol style="margin:15px 0; line-height:1.8;">
+        <p>The <strong>two sub-maps</strong> correspond with weekday data on the left and weekend data on the right. <strong>Hover</strong> over any colored line segment to see a tooltip containing the segment name, the calculated change in speed post-shutdown, and the number of data points measured for the segment.
+            You can also <strong>hover</strong> over a station to show its name, and <strong>scroll to zoom</strong> using a mouse or by clicking the +/− buttons</p>
+        </ol>
+    </div>
+    <iframe src="improvement_output.html" width='100%' class="map-iframe" frameborder='0'></iframe>
+    <p>This map reveals that the shorter segments downtown (which had the least room for improvement) only experienced slightly positive or even negative speed changes after the shutdown. Track segments closer to the terminal stations saw the most improvement, particularly on segments of the Southwest Corridor where speed increased anywhere between 5 and 10 extra mph. The most improved segment by far was the previously mentioned stretch between Stony Brook and Jackson Square, whose speeds are now almost equal to the Roxbury Crossing - Ruggles segment. Overall, weekends showed higher speed improvements than weekdays, which is likely due to the reduced train volume which results in fewer data points.</p>
+
+    <div class="design-note">
+        <strong>Design Justification for the Improvement Map:</strong><br>
+        • Mark: Colored geographic line segments<br>
+        • Position: real lat/lon coordinates for accurate spatial context<br>
+        • Color: diverging blue/red colorscheme to match YlOrRd scheme of above map while showing negative values<br>
+        • 1x2 grid clearly separates weekday/weekend<br>
+        • Hover + zoom/pan interactivity reveals precise segment-level improvements<br>
+    </div>
+
+
+</section>
+
+<section id="conclusion">
+    <h2>Conclusion – What We Learned</h2>
+    <p>The October 2024 Orange Line shutdown was a <strong>resounding success on speed</strong> — the speed map shows massive gains across nearly the entire line, especially in the repaired Southwest Corridor south of Ruggles Station.</p>
+    <p>As for <strong>reliability and frequency</strong>, we can see that:<br>
+        <ul>
+            <li>Stop-by-stop headways showed almost no improvement. The stretch of weekdays after the shutdown saw longer headways at every station, and on the weekends there was only a slight improvement.</li>
+            <li>The distribution of headway times were essentially identical according to the boxplot, which also shows post-shutdown weekdays having lower frequency on average.</li>
+            <li>Hourly, there was a slight improvement on frequency during midday. Some of the discrepancies during Week 2 are explained by late-night outliers, so there was only a slight overall improvement after shutdown.</li>
+        </ul>
+    <p>We think this lack of frequency improvement is due to two reasons: Firstly, operations likely slowly increased back to normal after the shutdown ended, which may cause little improvement in the first few weeks. Secondly, the only thing that changed after the shutdown was the quality of the tracks, and not the volume of the trains. In other words, trains themselves are moving faster, but without adding extra trains the frequency remains unchanged.</p>
+    <p><strong>Final verdict:</strong> Riders now enjoy dramatically faster trips, especially on the outskirts of the line, and they may even notice slightly higher train frequency during specific hours. Now that the underlying infastructure of the line has been repaired, future improvement efforts must target operations, scheduling, and increasing the volume of rolling stock.</p>
+    <p>The MBTA has been actively working on this front with the delivery of the new Chinese-built CRRC cars, which have already been fully deployed on the Orange Line and only partially on the Red Line. The delay in rollout is due to bureaucracy slowdowns with US Customs, who are actively investigating alleged labor violations<sup>3</sup>. Car deliveries on the Red Line have also been pushed back, forcing the MBTA to continue using the already-aged Pullman cars on the line. These cars are now the oldest operating subway cars in the United States, having been built in 1969.</p>
+    <p>As for the Orange Line, riders will likely see yet another improvement in frequency as the final CRRC cars are set to be delivered before the end of 2025.</p>
+</section>
+
+<section id="biblio">
+    <h2>Works Cited</h2>
+    <ol>
+        <li>Drysdale, Sam. “MBTA Track Deterioration Caused by Lack of Organizational Clarity, Communication and Experience, New Report Finds.” WBUR, September 8, 2023. https://www.wbur.org/news/2023/09/08/mbta-track-closures-slow-zones-shutdowns-problems.</li>
+        <li>MilNeil, Christian. “For the First Time In Years, Orange Line Trains Are Running At Full Speed Through the SW Corridor.” Streetsblog Massachusetts, October 21, 2024. https://mass.streetsblog.org/2024/10/21/for-the-first-time-in-years-orange-line-trains-are-running-at-full-speed-through-the-sw-corridor.</li>
+        <li>Drysdale, Sam. “After Delay from Federal Labor Review, Final Orange Line Cars Expected by End of Year.” WBUR News, November 20, 2025. https://www.wbur.org/news/2025/11/20/orange-line-cars-delayed-forced-labor.</li>
+    </ol>
+    <h2>Reference Papers</h2>
+    <ul>
+        <li>Bernal, Margarita, Eric W. Welch, and P.S. Sriraj. “The Effect of Slow Zones on Ridership: An Analysis of the Chicago Transit Authority ‘El’ Blue Line.” Transportation Research Part A: Policy and Practice 87 (March 2016): 11 - 21. https://doi.org/10.1016/j.tra.2016.02.007.</li>
+        <li>Boukin, Katerina. “Improving South Boston Rail Corridor.” DSpace@MIT, MIT Libraries, 2020. https://dspace.mit.edu/handle/1721.1/127330.</li>
+    </ul>
+</section>
+
+<footer>
+    DS4200 Fall 2025 – Colin Chu, Alex Ferguson, Anish Sanghi
+</footer>
+
+</body>
+</html>
