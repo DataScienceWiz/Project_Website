@@ -78,6 +78,27 @@ function drawPanel(data, yOffset, title, weekLabels, showXAxis=false) {
                  .attr("opacity", 0.8);
     });
 
+    const tooltip = d3.select("#tooltip");
+
+    barGroups
+    .on("mouseover", (event, d) => {
+        tooltip.style("opacity", 1)
+               .html(`
+                    <strong>${d.stop_name}</strong><br>
+                    Week 1: ${d.week1} sec<br>
+                    Week 2: ${d.week2} sec<br>
+                    Improvement: ${d.improvement} sec
+               `);
+    })
+    .on("mousemove", (event) => {
+        tooltip.style("left", (event.pageX + 10) + "px")
+               .style("top", (event.pageY - 28) + "px");
+    })
+    .on("mouseout", () => {
+        tooltip.style("opacity", 0);
+    });
+
+
     svg.append("g")
        .attr("transform", `translate(${margin.left},0)`)
        .call(d3.axisLeft(y).tickValues(d3.range(0, yMax, 100))); 
