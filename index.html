@@ -19,7 +19,7 @@
             display: block;
             border: none;}
         #interactive .headway-iframe {
-            height: 600px;}
+            height: 400px;}
         #interactive .map-iframe {
             height: 1200px;}
     </style>
@@ -137,21 +137,22 @@
 <section id="interactive">
     <h2>Visualization 3: Average Headway by Time of Day</h2>
     <div style="background:#fff4e6; padding:20px; border-left:5px solid #ff8c00; margin:30px 0; border-radius:8px;">
-  <strong>How to use this interactive headway graph:</strong>
-  <ol style="margin:15px 0; line-height:1.8;">
-    <li>The <strong>left panel shows weekdays</strong> (solid lines)</li>
-    <li>The <strong>right panel shows weekends</strong> (dashed lines)</li>
-    <li>Use the <strong>Weeks radio buttons</strong> at the top:<br>
-        • <strong>Both</strong> → navy blue = Pre-shutdown, gold = Post-shutdown<br>
-        • <strong>Week 1 (Pre)</strong> → only navy blue highlighted<br>
-        • <strong>Week 2 (Post)</strong> → only gold highlighted</li>
-    <li><strong>Hover</strong> any point to see the exact average headway in minutes for that hour</li>
-  </ol>
-  </p>
-</div>
-<div style="text-align:center;">
-    <iframe src="headway_line_interactive.html" width='100%' class="headway-iframe" frameborder="0"></iframe>
-</div>
+    <strong>How to use this interactive headway graph:</strong>
+    <ol style="margin:15px 0; line-height:1.8;">
+        <li>The <strong>top panel shows weekdays</strong> (solid lines)</li>
+        <li>The <strong>bottom panel shows weekends</strong> (dashed lines)</li>
+        <li>Use the <strong>Weeks radio buttons</strong> at the top:<br>
+            • <strong>Both</strong> → navy blue = Pre-shutdown, gold = Post-shutdown<br>
+            • <strong>Week 1 (Pre)</strong> → only navy blue highlighted<br>
+            • <strong>Week 2 (Post)</strong> → only gold highlighted</li>
+        <li><strong>Hover</strong> any point to see the exact average headway in minutes for that hour</li>
+    </ol>
+
+    </div>
+    <div style="text-align:center;">
+        <iframe src="headway_line_interactive.html" class="headway-iframe" frameborder="0"></iframe>
+    </div>
+
     <div class="design-note">
         <strong>Design justification:</strong><br>
         • Mark: Line and point, gives insight to headways at different times of the day + judge headways hourly to compare changes in parts of the day and identify outliers<br>
